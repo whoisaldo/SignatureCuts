@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://signaturecuts413.com/sitemap.xml
+Sitemap: https://signaturecutschicopee.com/sitemap.xml

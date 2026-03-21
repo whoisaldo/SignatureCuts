@@ -18,5 +18,5 @@ export const siteConfig = {
     lat: 42.1707,
     lng: -72.5764,
   },
-  url: "https://signaturecuts413.com",
+  url: "https://signaturecutschicopee.com",
 } as const;
