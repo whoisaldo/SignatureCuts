@@ -45,7 +45,6 @@ export const metadata: Metadata = {
     description:
       "Premium cuts, beard trims, and grooming in Chicopee, MA. Walk-ins welcome.",
   },
-  manifest: "/manifest.json",
 };
 
 export const viewport: Viewport = {
