@@ -18,18 +18,17 @@ export default function Hours() {
   return (
     <section id="hours" className="section-padding max-w-6xl mx-auto">
       <AnimateIn>
-        <p className="font-body text-xs tracking-[0.3em] uppercase text-gold mb-3 text-center">
+        <p className="font-body text-[11px] tracking-[0.35em] uppercase text-quartz/70 mb-3 text-center">
           Visit Us
         </p>
-        <h2 className="font-display text-5xl md:text-7xl text-center text-cream mb-14">
-          HOURS & LOCATION
+        <h2 className="font-display text-5xl md:text-7xl text-center text-cream mb-16">
+          HOURS &amp; LOCATION
         </h2>
       </AnimateIn>
 
-      <div className="grid md:grid-cols-2 gap-8 md:gap-14">
-        {/* Hours */}
+      <div className="grid md:grid-cols-2 gap-6 md:gap-12">
         <AnimateIn>
-          <div className="gold-border rounded-xl p-6 md:p-8 bg-white/[0.02]">
+          <div className="quartz-border rounded-2xl p-6 md:p-8 bg-surface/50">
             <h3 className="font-display text-2xl text-cream mb-6">HOURS</h3>
             <AnimateIn stagger>
               <div className="space-y-0">
@@ -38,14 +37,14 @@ export default function Hours() {
                   return (
                     <AnimateItem key={day.day}>
                       <div
-                        className={`flex justify-between items-center py-3 border-b border-white/5 last:border-0 ${
-                          isToday ? "text-gold" : "text-cream/70"
+                        className={`flex justify-between items-center py-3.5 border-b border-white/5 last:border-0 ${
+                          isToday ? "text-quartz" : "text-cream/60"
                         }`}
                       >
                         <span className="font-body text-sm font-medium flex items-center gap-2">
                           {day.day}
                           {isToday && (
-                            <span className="text-[10px] bg-gold/20 text-gold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                            <span className="text-[10px] bg-quartz/15 text-quartz px-2 py-0.5 rounded-full uppercase tracking-wider">
                               Today
                             </span>
                           )}
@@ -64,10 +63,9 @@ export default function Hours() {
           </div>
         </AnimateIn>
 
-        {/* Location */}
         <AnimateIn delay={0.1}>
           <div className="space-y-6">
-            <div className="gold-border rounded-xl overflow-hidden aspect-[4/3] bg-[#111]">
+            <div className="rounded-2xl overflow-hidden aspect-[4/3] bg-surface">
               <iframe
                 title="Signature Cuts 413 Location"
                 src={mapsEmbedUrl}
@@ -94,7 +92,7 @@ export default function Hours() {
                   href={directionsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-gold text-sm px-5 py-2.5"
+                  className="btn-quartz text-sm px-5 py-2.5"
                   aria-label="Get directions to Signature Cuts 413"
                 >
                   <svg

@@ -15,19 +15,19 @@ export default function Home() {
       <div className="relative z-10">
         <Services />
 
-        <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent mx-auto" />
+        <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-quartz/20 to-transparent mx-auto" />
 
         <Gallery />
 
-        <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent mx-auto" />
+        <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-quartz/20 to-transparent mx-auto" />
 
         <About />
 
-        <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent mx-auto" />
+        <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-quartz/20 to-transparent mx-auto" />
 
         <Hours />
 
-        <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent mx-auto" />
+        <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-quartz/20 to-transparent mx-auto" />
 
         <BookingForm />
       </div>
@@ -35,7 +35,6 @@ export default function Home() {
       <Footer />
       <MobileBottomBar />
 
-      {/* Bottom padding for mobile bottom bar */}
       <div className="h-20 md:hidden" aria-hidden="true" />
     </>
   );

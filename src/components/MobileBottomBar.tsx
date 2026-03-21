@@ -34,7 +34,7 @@ export default function MobileBottomBar() {
         <div className="flex items-center gap-3 max-w-lg mx-auto">
           <button
             onClick={scrollToBooking}
-            className="flex-1 btn-gold py-3 text-sm rounded-xl"
+            className="flex-1 btn-quartz py-3 text-sm"
             aria-label="Book an appointment"
           >
             Book Now
@@ -42,7 +42,7 @@ export default function MobileBottomBar() {
 
           <a
             href={`tel:${siteConfig.phone}`}
-            className="flex items-center justify-center w-12 h-12 rounded-xl border border-white/10 text-cream hover:text-gold hover:border-gold/30 transition-all duration-300"
+            className="flex items-center justify-center w-12 h-12 rounded-xl border border-white/10 text-cream hover:text-quartz hover:border-quartz/30 transition-all duration-300"
             aria-label={`Call ${siteConfig.phoneDisplay}`}
           >
             <svg
@@ -65,7 +65,7 @@ export default function MobileBottomBar() {
             href={directionsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center w-12 h-12 rounded-xl border border-white/10 text-cream hover:text-gold hover:border-gold/30 transition-all duration-300"
+            className="flex items-center justify-center w-12 h-12 rounded-xl border border-white/10 text-cream hover:text-quartz hover:border-quartz/30 transition-all duration-300"
             aria-label="Get directions"
           >
             <svg

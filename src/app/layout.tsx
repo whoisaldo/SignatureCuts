@@ -51,7 +51,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: "#0A0A0A",
+  themeColor: "#050505",
 };
 
 const jsonLd = {
@@ -116,7 +116,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-black antialiased">
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-gold focus:text-black focus:rounded-lg"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-quartz focus:text-black focus:rounded-lg"
         >
           Skip to content
         </a>

@@ -76,7 +76,7 @@ export default function BookingForm() {
   return (
     <section id="booking" className="section-padding max-w-2xl mx-auto">
       <AnimateIn>
-        <p className="font-body text-xs tracking-[0.3em] uppercase text-gold mb-3 text-center">
+        <p className="font-body text-[11px] tracking-[0.35em] uppercase text-quartz/70 mb-3 text-center">
           Reserve Your Spot
         </p>
         <h2 className="font-display text-5xl md:text-7xl text-center text-cream mb-4">
@@ -91,9 +91,8 @@ export default function BookingForm() {
         <form
           onSubmit={handleSubmit}
           noValidate
-          className="gold-border rounded-2xl p-6 md:p-10 bg-white/[0.02] space-y-5"
+          className="quartz-border rounded-2xl p-6 md:p-10 bg-surface/50 space-y-5"
         >
-          {/* Name */}
           <div>
             <label
               htmlFor="booking-name"
@@ -118,7 +117,6 @@ export default function BookingForm() {
             )}
           </div>
 
-          {/* Service */}
           <div>
             <label
               htmlFor="booking-service"
@@ -152,7 +150,6 @@ export default function BookingForm() {
             )}
           </div>
 
-          {/* Date */}
           <div>
             <label
               htmlFor="booking-date"
@@ -177,13 +174,12 @@ export default function BookingForm() {
               <p className="text-red-400 text-xs mt-1 font-body">{errors.date}</p>
             )}
             {closedDay && date && (
-              <p className="text-gold/80 text-xs mt-1 font-body">
+              <p className="text-quartz/80 text-xs mt-1 font-body">
                 We&apos;re closed on this day. Please select another date.
               </p>
             )}
           </div>
 
-          {/* Time Slots */}
           {date && !closedDay && timeSlots.length > 0 && (
             <div>
               <label className="block font-body text-xs text-muted tracking-wider uppercase mb-3">
@@ -199,9 +195,9 @@ export default function BookingForm() {
                       if (errors.time)
                         setErrors((p) => ({ ...p, time: undefined }));
                     }}
-                    className={`py-2.5 px-2 rounded-lg font-body text-xs transition-all duration-200 border ${
+                    className={`py-2.5 px-2 rounded-xl font-body text-xs transition-all duration-200 border ${
                       time === slot
-                        ? "border-gold bg-gold/10 text-gold"
+                        ? "border-quartz bg-quartz/10 text-quartz"
                         : "border-white/10 text-muted hover:border-white/20 hover:text-cream"
                     }`}
                     aria-pressed={time === slot}
@@ -218,7 +214,6 @@ export default function BookingForm() {
             </div>
           )}
 
-          {/* Notes */}
           <div>
             <label
               htmlFor="booking-notes"
@@ -245,7 +240,7 @@ export default function BookingForm() {
                 <m.button
                   key="submit"
                   type="submit"
-                  className="btn-gold w-full text-base py-4 rounded-xl mt-2"
+                  className="btn-quartz w-full text-base py-4 mt-2"
                   initial={{ opacity: 1 }}
                   exit={{ opacity: 0, y: -10 }}
                 >
@@ -281,7 +276,7 @@ export default function BookingForm() {
                   </a>
                   <a
                     href={smsUrl}
-                    className="flex items-center justify-center gap-3 w-full py-4 rounded-xl font-body font-semibold text-sm border border-white/20 text-cream transition-all duration-300 hover:border-white/40 active:scale-[0.98]"
+                    className="flex items-center justify-center gap-3 w-full py-4 rounded-xl font-body font-semibold text-sm border border-white/20 text-cream transition-all duration-300 hover:border-white/30 active:scale-[0.98]"
                   >
                     <svg
                       className="w-5 h-5"

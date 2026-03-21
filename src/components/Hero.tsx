@@ -12,24 +12,22 @@ export default function Hero() {
       id="hero"
       className="relative min-h-[100dvh] flex flex-col items-center justify-center overflow-hidden px-5"
     >
-      {/* Animated accent line — minimal barber pole effect */}
       <div
-        className="absolute left-6 md:left-12 top-0 bottom-0 w-[2px] opacity-20"
+        className="absolute left-6 md:left-12 top-0 bottom-0 w-[1px] opacity-10"
         style={{
           background:
-            "repeating-linear-gradient(180deg, #C9A84C 0px, #C9A84C 10px, transparent 10px, transparent 20px, #F5F5F5 20px, #F5F5F5 30px, transparent 30px, transparent 40px)",
-          backgroundSize: "2px 60px",
-          animation: "poleStripe 3s linear infinite",
+            "repeating-linear-gradient(180deg, #D4C5B0 0px, #D4C5B0 8px, transparent 8px, transparent 24px)",
+          backgroundSize: "1px 32px",
+          animation: "poleStripe 4s linear infinite",
         }}
         aria-hidden="true"
       />
 
-      {/* Subtle radial glow */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 40%, rgba(201,168,76,0.06) 0%, transparent 70%)",
+            "radial-gradient(ellipse at 50% 35%, rgba(212,197,176,0.04) 0%, transparent 65%)",
         }}
         aria-hidden="true"
       />
@@ -41,7 +39,7 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
-            <p className="font-body text-xs md:text-sm tracking-[0.3em] uppercase text-gold mb-6 md:mb-8">
+            <p className="font-body text-[11px] md:text-xs tracking-[0.35em] uppercase text-quartz/70 mb-6 md:mb-8">
               Premium Barbershop
             </p>
           </m.div>
@@ -58,7 +56,7 @@ export default function Hero() {
           >
             SIGNATURE
             <br />
-            <span className="text-gradient-gold">CUTS</span>
+            <span className="text-gradient-quartz">CUTS</span>
           </m.h1>
 
           <m.p
@@ -67,7 +65,7 @@ export default function Hero() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.35 }}
           >
-            Walk-ins Welcome&ensp;•&ensp;Chicopee, MA
+            Walk-ins Welcome&ensp;&middot;&ensp;Chicopee, MA
           </m.p>
 
           <m.div
@@ -77,7 +75,7 @@ export default function Hero() {
           >
             <button
               onClick={scrollToBooking}
-              className="btn-gold text-base px-10 py-4 rounded-lg"
+              className="btn-quartz text-base px-10 py-4"
               aria-label="Book an appointment"
             >
               Book Now
@@ -86,12 +84,11 @@ export default function Hero() {
         </div>
       </LazyMotion>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-30">
         <span className="font-body text-[10px] tracking-[0.2em] uppercase text-muted">
           Scroll
         </span>
-        <div className="w-[1px] h-8 bg-gradient-to-b from-gold/60 to-transparent" />
+        <div className="w-[1px] h-8 bg-gradient-to-b from-quartz/40 to-transparent" />
       </div>
     </section>
   );

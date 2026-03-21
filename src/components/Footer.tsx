@@ -15,12 +15,11 @@ export default function Footer() {
           </div>
 
           <div className="flex items-center gap-5">
-            {/* Instagram */}
             <a
               href={siteConfig.socials.instagram}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted hover:text-gold transition-colors duration-300"
+              className="text-muted hover:text-quartz transition-colors duration-300"
               aria-label="Follow us on Instagram"
             >
               <svg
@@ -33,10 +32,9 @@ export default function Footer() {
               </svg>
             </a>
 
-            {/* Phone */}
             <a
               href={`tel:${siteConfig.phone}`}
-              className="text-muted hover:text-gold transition-colors duration-300"
+              className="text-muted hover:text-quartz transition-colors duration-300"
               aria-label={`Call ${siteConfig.phoneDisplay}`}
             >
               <svg
@@ -58,7 +56,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-8 pt-6 border-t border-white/5 text-center">
-          <p className="font-body text-xs text-muted/60">
+          <p className="font-body text-xs text-muted/50">
             &copy; {new Date().getFullYear()} {siteConfig.name}. All rights
             reserved.
           </p>
