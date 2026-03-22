@@ -302,9 +302,9 @@ export default function BookingForm() {
               </div>
               {bookingMode !== "shop" && (
                 <p className="rounded-xl border border-quartz/20 bg-quartz/5 px-4 py-3 font-body text-xs leading-6 text-quartz/85">
-                  Steve offers premium out-of-hours and at-home appointments.
-                  Additional cost applies and the final price is confirmed with him
-                  directly.
+                  {barberDisplay ?? "Your barber"} offers premium out-of-hours and
+                  at-home appointments. Additional cost applies and the final price
+                  is confirmed directly.
                 </p>
               )}
             </div>
@@ -377,8 +377,8 @@ export default function BookingForm() {
             {closedDay && date && (
               <p className="text-quartz/80 text-xs mt-1 font-body">
                 We&apos;re closed on {selectedDay?.day ?? "this day"}. Please pick a
-                different date, or choose Steve&apos;s premium options for after-hours
-                requests.
+                different date, or use premium out-of-hours booking if your barber
+                offers it.
               </p>
             )}
           </div>
