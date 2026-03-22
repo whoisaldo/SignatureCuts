@@ -2,6 +2,8 @@ import Hero from "@/components/Hero";
 import Services from "@/components/Services";
 import Gallery from "@/components/Gallery";
 import About from "@/components/About";
+import Team from "@/components/Team";
+import AmbientImage from "@/components/AmbientImage";
 import Hours from "@/components/Hours";
 import BookingForm from "@/components/BookingForm";
 import MobileBottomBar from "@/components/MobileBottomBar";
@@ -22,6 +24,10 @@ export default function Home() {
         <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-quartz/20 to-transparent mx-auto" />
 
         <About />
+
+        <AmbientImage />
+
+        <Team />
 
         <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-quartz/20 to-transparent mx-auto" />
 
