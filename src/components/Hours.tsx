@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { hours, type DayHours } from "@/config/hours";
 import { siteConfig } from "@/config/siteConfig";
+import { getDirectionsUrl } from "@/lib/directions";
 import { AnimateIn, AnimateItem } from "./AnimateIn";
 
 export default function Hours() {
@@ -12,7 +13,14 @@ export default function Hours() {
     setTodayIndex(new Date().getDay());
   }, []);
 
-  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(siteConfig.fullAddress)}`;
+  const directionsUrl = useMemo(
+    () =>
+      getDirectionsUrl(
+        siteConfig.fullAddress,
+        typeof navigator === "undefined" ? "" : navigator.userAgent,
+      ),
+    [],
+  );
   const mapsEmbedUrl = `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(siteConfig.fullAddress)}&zoom=15`;
 
   return (

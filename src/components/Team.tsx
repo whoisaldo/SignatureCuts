@@ -60,9 +60,16 @@ function BarberCard({ barber, index }: { barber: Barber; index: number }) {
                 d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
               />
             </svg>
-            <span className="font-body text-[11px] text-muted/30 tracking-[0.15em] uppercase">
-              Barber Photo
-            </span>
+            <div className="text-center">
+              <span className="block font-body text-[11px] text-muted/30 tracking-[0.15em] uppercase">
+                Photo Coming Soon
+              </span>
+              {!barber.isPlaceholder && (
+                <span className="block font-body text-[11px] text-muted/40 mt-1">
+                  New image will be added soon
+                </span>
+              )}
+            </div>
           </div>
         )}
       </div>

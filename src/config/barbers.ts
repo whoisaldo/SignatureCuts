@@ -4,6 +4,7 @@ export interface Barber {
   alias?: string;
   image?: string;
   phone?: string;
+  offersPremiumAppointments?: boolean;
   licensed: string;
   experience: string;
   background: string;
@@ -18,48 +19,35 @@ export const barbers: Barber[] = [
     alias: "Goes by Steve",
     image: "/images/Barbers/SteveBarber1.jpg",
     phone: "+14138854013",
+    offersPremiumAppointments: true,
     licensed: "Massachusetts licensed barber",
     experience: "Cutting since 2019 — 6+ years behind the chair",
     background: "Lebanese-American, born and raised in the 413. Big sports fan.",
     specialties: ["Fades", "Beard work", "Lineups", "Hair design"],
   },
   {
-    // ============================================
-    // PLACEHOLDER BARBER 2 — FILL IN LATER
-    // Replace all fields below with real info
-    // Add photo to /public/images/Barbers/barber2.jpg
-    // Add phone number
-    // Set isPlaceholder to false when ready
-    // ============================================
-    id: "barber-2",
-    name: "Coming Soon",
+    id: "hassan",
+    name: "Hassan",
     alias: undefined,
-    image: undefined,
-    phone: undefined,
+    image: "/images/Barbers/HassanBarber2.jpg",
+    phone: "+14134196502",
+    offersPremiumAppointments: false,
     licensed: "Licensed barber",
-    experience: "",
+    experience: "2 years behind the chair",
     background: "",
     specialties: [],
-    isPlaceholder: true,
   },
   {
-    // ============================================
-    // PLACEHOLDER BARBER 3 — FILL IN LATER
-    // Replace all fields below with real info
-    // Add photo to /public/images/Barbers/barber3.jpg
-    // Add phone number
-    // Set isPlaceholder to false when ready
-    // ============================================
-    id: "barber-3",
-    name: "Coming Soon",
+    id: "mohammad",
+    name: "Mohammad",
     alias: undefined,
-    image: undefined,
-    phone: undefined,
+    image: "/images/Barbers/MohammadBarber3.jpg",
+    phone: "+14133029392",
+    offersPremiumAppointments: false,
     licensed: "Licensed barber",
-    experience: "",
+    experience: "Cutting since 2019 — 6+ years behind the chair",
     background: "",
     specialties: [],
-    isPlaceholder: true,
   },
 ];
 

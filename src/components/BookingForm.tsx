@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { LazyMotion, domAnimation, m, AnimatePresence } from "framer-motion";
 import { services } from "@/config/services";
-import { hours, getTimeSlots } from "@/config/hours";
+import { getDayHours, getTimeSlots, isClosedDay } from "@/config/hours";
 import { siteConfig } from "@/config/siteConfig";
 import {
   getActiveBarbers,
@@ -21,11 +21,20 @@ interface FormErrors {
   time?: string;
 }
 
+type BookingMode = "shop" | "out-of-hours" | "at-home";
+
+const bookingModeLabels: Record<BookingMode, string> = {
+  shop: "In-shop appointment",
+  "out-of-hours": "Out-of-hours haircut (additional cost applies)",
+  "at-home": "At-home haircut (additional cost applies)",
+};
+
 export default function BookingForm() {
   const activeBarbers = getActiveBarbers();
 
   const [name, setName] = useState("");
   const [barberId, setBarberId] = useState("");
+  const [bookingMode, setBookingMode] = useState<BookingMode>("shop");
   const [service, setService] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
@@ -44,25 +53,45 @@ export default function BookingForm() {
     return () => window.removeEventListener("select-barber", handler);
   }, []);
 
-  const selectedBarber = barbers.find((b) => b.id === barberId);
-  const barberDisplay = selectedBarber
-    ? getBarberDisplayName(selectedBarber)
+  const defaultBarberId = activeBarbers.length === 1 ? activeBarbers[0].id : "";
+  const resolvedBarberId = barberId || defaultBarberId;
+  const resolvedBarber = barbers.find((b) => b.id === resolvedBarberId);
+  const barberDisplay = resolvedBarber
+    ? getBarberDisplayName(resolvedBarber)
     : undefined;
+  const supportsPremiumAppointments =
+    resolvedBarber?.offersPremiumAppointments ?? false;
+  const isSpecialBarberBooking =
+    supportsPremiumAppointments && bookingMode !== "shop";
 
   const today = new Date().toISOString().split("T")[0];
 
-  const timeSlots = useMemo(() => {
-    if (!date) return [];
-    const dayIndex = new Date(date + "T12:00:00").getDay();
-    return getTimeSlots(dayIndex);
+  const selectedDayIndex = useMemo(() => {
+    if (!date) return null;
+    return new Date(date + "T12:00:00").getDay();
   }, [date]);
 
+  const selectedDay = useMemo(() => {
+    if (selectedDayIndex === null) return undefined;
+    return getDayHours(selectedDayIndex);
+  }, [selectedDayIndex]);
+
+  const timeSlots = useMemo(() => {
+    if (selectedDayIndex === null || isSpecialBarberBooking) return [];
+    return getTimeSlots(selectedDayIndex);
+  }, [selectedDayIndex, isSpecialBarberBooking]);
+
   const closedDay = useMemo(() => {
-    if (!date) return false;
-    const dayIndex = new Date(date + "T12:00:00").getDay();
-    const day = hours.find((h) => h.dayIndex === dayIndex);
-    return !day || day.open === null;
-  }, [date]);
+    if (selectedDayIndex === null || isSpecialBarberBooking) return false;
+    return isClosedDay(selectedDayIndex);
+  }, [selectedDayIndex, isSpecialBarberBooking]);
+
+  useEffect(() => {
+    if (!supportsPremiumAppointments && bookingMode !== "shop") {
+      setBookingMode("shop");
+      setTime("");
+    }
+  }, [supportsPremiumAppointments, bookingMode]);
 
   const validate = useCallback((): boolean => {
     const newErrors: FormErrors = {};
@@ -72,10 +101,30 @@ export default function BookingForm() {
     if (!service) newErrors.service = "Select a service";
     if (!date) newErrors.date = "Select a date";
     else if (date < today) newErrors.date = "Date cannot be in the past";
-    if (!time && !closedDay) newErrors.time = "Select a time";
+    else if (closedDay)
+      newErrors.date = `${selectedDay?.day ?? "This day"} is unavailable for in-shop bookings`;
+
+    if (!time) {
+      newErrors.time =
+        bookingMode === "shop"
+          ? "Select a time"
+          : "Choose a preferred time for this premium appointment";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  }, [name, barberId, service, date, time, today, closedDay, activeBarbers.length]);
+  }, [
+    name,
+    barberId,
+    service,
+    date,
+    time,
+    today,
+    closedDay,
+    selectedDay?.day,
+    bookingMode,
+    activeBarbers.length,
+  ]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,9 +135,6 @@ export default function BookingForm() {
     setShowActions(true);
   };
 
-  const resolvedBarberId =
-    barberId || (activeBarbers.length === 1 ? activeBarbers[0].id : "");
-  const resolvedBarber = barbers.find((b) => b.id === resolvedBarberId);
   const targetPhone = resolvedBarber?.phone || siteConfig.phone;
 
   const message = useMemo(() => {
@@ -98,9 +144,10 @@ export default function BookingForm() {
       date,
       time,
       barber: resolvedBarber ? getBarberDisplayName(resolvedBarber) : undefined,
+      bookingType: bookingModeLabels[bookingMode],
       notes,
     });
-  }, [name, service, date, time, resolvedBarber, notes]);
+  }, [name, service, date, time, resolvedBarber, bookingMode, notes]);
 
   const whatsappUrl = getWhatsAppURL(targetPhone, message);
   const smsUrl = getSMSURL(targetPhone, message);
@@ -108,6 +155,7 @@ export default function BookingForm() {
   const resetForm = () => {
     setName("");
     setBarberId("");
+    setBookingMode("shop");
     setService("");
     setDate("");
     setTime("");
@@ -211,6 +259,57 @@ export default function BookingForm() {
             )}
           </div>
 
+          {supportsPremiumAppointments && (
+            <div className="space-y-3">
+              <label className="block font-body text-xs text-muted tracking-wider uppercase">
+                Appointment Type
+              </label>
+              <div className="grid gap-2 sm:grid-cols-3">
+                {(
+                  [
+                    ["shop", "In Shop"],
+                    ["out-of-hours", "Out of Hours"],
+                    ["at-home", "At Home"],
+                  ] as const
+                ).map(([mode, label]) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    onClick={() => {
+                      setBookingMode(mode);
+                      setTime("");
+                      setShowActions(false);
+                      if (errors.time || errors.date) {
+                        setErrors((prev) => ({
+                          ...prev,
+                          time: undefined,
+                          date: undefined,
+                        }));
+                      }
+                    }}
+                    className={`rounded-xl border px-4 py-3 text-left transition-all duration-200 ${
+                      bookingMode === mode
+                        ? "border-quartz bg-quartz/10 text-quartz"
+                        : "border-white/10 bg-black/20 text-cream hover:border-white/20"
+                    }`}
+                    aria-pressed={bookingMode === mode}
+                  >
+                    <span className="block font-body text-sm font-medium uppercase tracking-wide">
+                      {label}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              {bookingMode !== "shop" && (
+                <p className="rounded-xl border border-quartz/20 bg-quartz/5 px-4 py-3 font-body text-xs leading-6 text-quartz/85">
+                  Steve offers premium out-of-hours and at-home appointments.
+                  Additional cost applies and the final price is confirmed with him
+                  directly.
+                </p>
+              )}
+            </div>
+          )}
+
           <div>
             <label
               htmlFor="booking-service"
@@ -259,6 +358,7 @@ export default function BookingForm() {
               onChange={(e) => {
                 setDate(e.target.value);
                 setTime("");
+                setShowActions(false);
                 if (errors.date) setErrors((p) => ({ ...p, date: undefined }));
               }}
               className={`input-field ${errors.date ? "!border-red-500/50" : ""} ${!date ? "text-muted/50" : ""}`}
@@ -269,14 +369,21 @@ export default function BookingForm() {
                 {errors.date}
               </p>
             )}
+            {!isSpecialBarberBooking && (
+              <p className="text-quartz/80 text-xs mt-1 font-body">
+                In-shop bookings follow shop hours and Mondays stay unavailable.
+              </p>
+            )}
             {closedDay && date && (
               <p className="text-quartz/80 text-xs mt-1 font-body">
-                We&apos;re closed on this day. Please select another date.
+                We&apos;re closed on {selectedDay?.day ?? "this day"}. Please pick a
+                different date, or choose Steve&apos;s premium options for after-hours
+                requests.
               </p>
             )}
           </div>
 
-          {date && !closedDay && timeSlots.length > 0 && (
+          {date && !closedDay && bookingMode === "shop" && timeSlots.length > 0 && (
             <div>
               <label className="block font-body text-xs text-muted tracking-wider uppercase mb-3">
                 Preferred Time
@@ -288,6 +395,7 @@ export default function BookingForm() {
                     type="button"
                     onClick={() => {
                       setTime(slot);
+                      setShowActions(false);
                       if (errors.time)
                         setErrors((p) => ({ ...p, time: undefined }));
                     }}
@@ -310,6 +418,38 @@ export default function BookingForm() {
             </div>
           )}
 
+          {date && isSpecialBarberBooking && (
+            <div>
+              <label
+                htmlFor="booking-time"
+                className="block font-body text-xs text-muted tracking-wider uppercase mb-2"
+              >
+                Preferred Time
+              </label>
+              <input
+                id="booking-time"
+                type="time"
+                value={time}
+                onChange={(e) => {
+                  setTime(e.target.value);
+                  setShowActions(false);
+                  if (errors.time) setErrors((p) => ({ ...p, time: undefined }));
+                }}
+                className={`input-field ${errors.time ? "!border-red-500/50" : ""} ${!time ? "text-muted/50" : ""}`}
+                required
+              />
+              <p className="text-quartz/80 text-xs mt-1 font-body">
+                Choose any time that works for you. {barberDisplay ?? "Your barber"}{" "}
+                will confirm availability and the added premium directly.
+              </p>
+              {errors.time && (
+                <p className="text-red-400 text-xs mt-1 font-body">
+                  {errors.time}
+                </p>
+              )}
+            </div>
+          )}
+
           <div>
             <label
               htmlFor="booking-notes"
@@ -323,7 +463,10 @@ export default function BookingForm() {
             <textarea
               id="booking-notes"
               value={notes}
-              onChange={(e) => setNotes(e.target.value)}
+              onChange={(e) => {
+                setNotes(e.target.value);
+                setShowActions(false);
+              }}
               placeholder="Any special requests..."
               rows={3}
               className="input-field resize-none"
@@ -355,6 +498,13 @@ export default function BookingForm() {
                       ? `Send your booking to ${barberDisplay} directly:`
                       : "How would you like to send your booking request?"}
                   </p>
+                  {bookingMode !== "shop" && (
+                    <p className="rounded-xl border border-quartz/20 bg-quartz/5 px-4 py-3 font-body text-xs leading-6 text-quartz/85">
+                      This request includes a premium service outside normal shop
+                      hours. {barberDisplay ?? "Your barber"} will confirm timing and
+                      final pricing with you directly.
+                    </p>
+                  )}
                   <a
                     href={whatsappUrl}
                     target="_blank"

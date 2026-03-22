@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { siteConfig } from "@/config/siteConfig";
+import { getDirectionsUrl } from "@/lib/directions";
 
 export default function MobileBottomBar() {
   const [visible, setVisible] = useState(false);
@@ -18,7 +19,14 @@ export default function MobileBottomBar() {
     document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(siteConfig.fullAddress)}`;
+  const directionsUrl = useMemo(
+    () =>
+      getDirectionsUrl(
+        siteConfig.fullAddress,
+        typeof navigator === "undefined" ? "" : navigator.userAgent,
+      ),
+    [],
+  );
 
   return (
     <div
