@@ -3,12 +3,14 @@ export interface BookingData {
   service: string;
   date: string;
   time: string;
+  barber?: string;
   notes?: string;
 }
 
 export function composeMessage(data: BookingData): string {
   let msg = `Hey, I'd like to book an appointment.\n\n`;
   msg += `Name: ${data.name}\n`;
+  if (data.barber) msg += `Barber: ${data.barber}\n`;
   msg += `Service: ${data.service}\n`;
   msg += `Date: ${data.date}\n`;
   msg += `Time: ${data.time}`;

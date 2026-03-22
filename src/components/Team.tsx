@@ -1,14 +1,15 @@
 "use client";
 
-import { barbers, type Barber } from "@/config/barbers";
+import { barbers, type Barber, getBarberDisplayName } from "@/config/barbers";
 import { AnimateIn, AnimateItem } from "./AnimateIn";
 
 function BarberCard({ barber, index }: { barber: Barber; index: number }) {
-  const displayName = barber.alias
-    ? barber.alias.replace("Goes by ", "")
-    : barber.name.split(" ")[0];
+  const displayName = getBarberDisplayName(barber);
 
-  const scrollToBooking = () => {
+  const bookWithBarber = () => {
+    window.dispatchEvent(
+      new CustomEvent("select-barber", { detail: barber.id })
+    );
     document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -120,7 +121,7 @@ function BarberCard({ barber, index }: { barber: Barber; index: number }) {
             )}
 
             <button
-              onClick={scrollToBooking}
+              onClick={bookWithBarber}
               className="w-full btn-quartz py-3.5 text-sm uppercase tracking-wider"
               aria-label={`Book an appointment with ${barber.name}`}
             >

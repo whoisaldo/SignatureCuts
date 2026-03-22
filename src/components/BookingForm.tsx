@@ -1,28 +1,53 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { LazyMotion, domAnimation, m, AnimatePresence } from "framer-motion";
 import { services } from "@/config/services";
 import { hours, getTimeSlots } from "@/config/hours";
 import { siteConfig } from "@/config/siteConfig";
+import {
+  getActiveBarbers,
+  getBarberDisplayName,
+  barbers,
+} from "@/config/barbers";
 import { composeMessage, getWhatsAppURL, getSMSURL } from "@/lib/booking";
 import { AnimateIn } from "./AnimateIn";
 
 interface FormErrors {
   name?: string;
+  barber?: string;
   service?: string;
   date?: string;
   time?: string;
 }
 
 export default function BookingForm() {
+  const activeBarbers = getActiveBarbers();
+
   const [name, setName] = useState("");
+  const [barberId, setBarberId] = useState("");
   const [service, setService] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [notes, setNotes] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
   const [showActions, setShowActions] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const id = (e as CustomEvent<string>).detail;
+      if (barbers.find((b) => b.id === id)) {
+        setBarberId(id);
+      }
+    };
+    window.addEventListener("select-barber", handler);
+    return () => window.removeEventListener("select-barber", handler);
+  }, []);
+
+  const selectedBarber = barbers.find((b) => b.id === barberId);
+  const barberDisplay = selectedBarber
+    ? getBarberDisplayName(selectedBarber)
+    : undefined;
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -42,29 +67,47 @@ export default function BookingForm() {
   const validate = useCallback((): boolean => {
     const newErrors: FormErrors = {};
     if (!name.trim()) newErrors.name = "Name is required";
+    if (activeBarbers.length > 1 && !barberId)
+      newErrors.barber = "Select a barber";
     if (!service) newErrors.service = "Select a service";
     if (!date) newErrors.date = "Select a date";
     else if (date < today) newErrors.date = "Date cannot be in the past";
     if (!time && !closedDay) newErrors.time = "Select a time";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  }, [name, service, date, time, today, closedDay]);
+  }, [name, barberId, service, date, time, today, closedDay, activeBarbers.length]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (activeBarbers.length === 1 && !barberId) {
+      setBarberId(activeBarbers[0].id);
+    }
     if (!validate()) return;
     setShowActions(true);
   };
 
-  const message = useMemo(() => {
-    return composeMessage({ name, service, date, time, notes });
-  }, [name, service, date, time, notes]);
+  const resolvedBarberId =
+    barberId || (activeBarbers.length === 1 ? activeBarbers[0].id : "");
+  const resolvedBarber = barbers.find((b) => b.id === resolvedBarberId);
+  const targetPhone = resolvedBarber?.phone || siteConfig.phone;
 
-  const whatsappUrl = getWhatsAppURL(siteConfig.phone, message);
-  const smsUrl = getSMSURL(siteConfig.phone, message);
+  const message = useMemo(() => {
+    return composeMessage({
+      name,
+      service,
+      date,
+      time,
+      barber: resolvedBarber ? getBarberDisplayName(resolvedBarber) : undefined,
+      notes,
+    });
+  }, [name, service, date, time, resolvedBarber, notes]);
+
+  const whatsappUrl = getWhatsAppURL(targetPhone, message);
+  const smsUrl = getSMSURL(targetPhone, message);
 
   const resetForm = () => {
     setName("");
+    setBarberId("");
     setService("");
     setDate("");
     setTime("");
@@ -113,7 +156,58 @@ export default function BookingForm() {
               required
             />
             {errors.name && (
-              <p className="text-red-400 text-xs mt-1 font-body">{errors.name}</p>
+              <p className="text-red-400 text-xs mt-1 font-body">
+                {errors.name}
+              </p>
+            )}
+          </div>
+
+          {/* Barber selector */}
+          <div>
+            <label
+              htmlFor="booking-barber"
+              className="block font-body text-xs text-muted tracking-wider uppercase mb-2"
+            >
+              Your Barber
+            </label>
+            {activeBarbers.length === 1 ? (
+              <div className="input-field flex items-center gap-3">
+                {activeBarbers[0].image && (
+                  <img
+                    src={activeBarbers[0].image}
+                    alt=""
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                )}
+                <span className="text-cream">
+                  {getBarberDisplayName(activeBarbers[0])}
+                </span>
+              </div>
+            ) : (
+              <>
+                <select
+                  id="booking-barber"
+                  value={barberId}
+                  onChange={(e) => {
+                    setBarberId(e.target.value);
+                    if (errors.barber)
+                      setErrors((p) => ({ ...p, barber: undefined }));
+                  }}
+                  className={`input-field appearance-none ${errors.barber ? "!border-red-500/50" : ""} ${!barberId ? "text-muted/50" : ""}`}
+                >
+                  <option value="">Select a barber</option>
+                  {activeBarbers.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {getBarberDisplayName(b)} ({b.name})
+                    </option>
+                  ))}
+                </select>
+                {errors.barber && (
+                  <p className="text-red-400 text-xs mt-1 font-body">
+                    {errors.barber}
+                  </p>
+                )}
+              </>
             )}
           </div>
 
@@ -171,7 +265,9 @@ export default function BookingForm() {
               required
             />
             {errors.date && (
-              <p className="text-red-400 text-xs mt-1 font-body">{errors.date}</p>
+              <p className="text-red-400 text-xs mt-1 font-body">
+                {errors.date}
+              </p>
             )}
             {closedDay && date && (
               <p className="text-quartz/80 text-xs mt-1 font-body">
@@ -255,7 +351,9 @@ export default function BookingForm() {
                   className="space-y-3 mt-2"
                 >
                   <p className="font-body text-sm text-cream text-center mb-4">
-                    How would you like to send your booking request?
+                    {barberDisplay
+                      ? `Send your booking to ${barberDisplay} directly:`
+                      : "How would you like to send your booking request?"}
                   </p>
                   <a
                     href={whatsappUrl}
