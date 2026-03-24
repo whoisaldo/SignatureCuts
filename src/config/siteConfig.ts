@@ -3,6 +3,7 @@ export const siteConfig = {
   tagline: "Walk-ins Welcome • Chicopee, MA",
   phone: "+14135341114",
   phoneDisplay: "(413) 534-1114",
+  developerEmail: "aliyounes@eternalreverse.com",
   address: {
     street: "1889 Memorial Dr",
     city: "Chicopee",

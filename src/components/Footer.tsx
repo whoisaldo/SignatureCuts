@@ -14,7 +14,16 @@ export default function Footer() {
             </p>
           </div>
 
-          <div className="flex items-center gap-5">
+          <div className="flex flex-col items-center md:items-end gap-4">
+            <a
+              href={`mailto:${siteConfig.developerEmail}`}
+              className="btn-outline text-xs px-4 py-2.5"
+              aria-label={`Contact the developer at ${siteConfig.developerEmail}`}
+            >
+              Contact Developer
+            </a>
+
+            <div className="flex items-center gap-5">
             <a
               href={siteConfig.socials.instagram}
               target="_blank"
@@ -52,6 +61,7 @@ export default function Footer() {
                 />
               </svg>
             </a>
+            </div>
           </div>
         </div>
 
