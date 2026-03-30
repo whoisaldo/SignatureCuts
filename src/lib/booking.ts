@@ -30,7 +30,10 @@ export function getWhatsAppURL(phone: string, message: string): string {
 }
 
 export function getSMSURL(phone: string, message: string): string {
-  const body = message.replace(/&/g, "%26").replace(/#/g, "%23");
+  const body = message
+    .replace(/\r?\n/g, "%0D%0A")
+    .replace(/&/g, "%26")
+    .replace(/#/g, "%23");
   return `sms:${phone}&body=${body}`;
 }
 
