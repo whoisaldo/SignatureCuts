@@ -29,6 +29,16 @@ const bookingModeLabels: Record<BookingMode, string> = {
   "at-home": "At-home haircut (additional cost applies)",
 };
 
+function formatDisplayDate(isoDate: string): string {
+  const selectedDate = new Date(`${isoDate}T00:00:00`);
+  return selectedDate.toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 export default function BookingForm() {
   const activeBarbers = getActiveBarbers();
 
@@ -136,18 +146,22 @@ export default function BookingForm() {
   };
 
   const targetPhone = resolvedBarber?.phone || siteConfig.phone;
+  const formattedDate = useMemo(
+    () => (date ? formatDisplayDate(date) : ""),
+    [date],
+  );
 
   const message = useMemo(() => {
     return composeMessage({
       name,
       service,
-      date,
+      date: formattedDate,
       time,
       barber: resolvedBarber ? getBarberDisplayName(resolvedBarber) : undefined,
       bookingType: bookingModeLabels[bookingMode],
       notes,
     });
-  }, [name, service, date, time, resolvedBarber, bookingMode, notes]);
+  }, [name, service, formattedDate, time, resolvedBarber, bookingMode, notes]);
 
   const whatsappUrl = getWhatsAppURL(targetPhone, message);
   const smsUrl = getSMSURL(targetPhone, message);

@@ -9,15 +9,20 @@ export interface BookingData {
 }
 
 export function composeMessage(data: BookingData): string {
-  let msg = `Hey, I'd like to book an appointment.\n\n`;
-  msg += `Name: ${data.name}\n`;
-  if (data.barber) msg += `Barber: ${data.barber}\n`;
-  if (data.bookingType) msg += `Booking Type: ${data.bookingType}\n`;
-  msg += `Service: ${data.service}\n`;
-  msg += `Date: ${data.date}\n`;
-  msg += `Time: ${formatRequestedTime(data.time)}`;
-  if (data.notes) msg += `\nNotes: ${data.notes}`;
-  return msg;
+  const lines: string[] = [
+    "Hey, I'd like to book an appointment.",
+    "",
+  ];
+
+  if (data.name) lines.push(`Name: ${data.name}`);
+  if (data.barber) lines.push(`Barber: ${data.barber}`);
+  if (data.bookingType) lines.push(`Booking Type: ${data.bookingType}`);
+  if (data.service) lines.push(`Service: ${data.service}`);
+  if (data.date) lines.push(`Date: ${data.date}`);
+  if (data.time) lines.push(`Time: ${formatRequestedTime(data.time)}`);
+  if (data.notes) lines.push(`Notes: ${data.notes}`);
+
+  return lines.join("\n");
 }
 
 export function getWhatsAppURL(phone: string, message: string): string {
@@ -25,7 +30,8 @@ export function getWhatsAppURL(phone: string, message: string): string {
 }
 
 export function getSMSURL(phone: string, message: string): string {
-  return `sms:${phone}?body=${encodeURIComponent(message)}`;
+  const body = message.replace(/&/g, "%26").replace(/#/g, "%23");
+  return `sms:${phone}&body=${body}`;
 }
 
 export function getDirectionsURL(lat: number, lng: number, address: string): string {
