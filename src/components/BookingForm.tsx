@@ -51,6 +51,14 @@ export default function BookingForm() {
   const [notes, setNotes] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
   const [showActions, setShowActions] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+
+  useEffect(() => {
+    setIsIOS(
+      /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+    );
+  }, []);
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -164,7 +172,7 @@ export default function BookingForm() {
   }, [name, service, formattedDate, time, resolvedBarber, bookingMode, notes]);
 
   const whatsappUrl = getWhatsAppURL(targetPhone, message);
-  const smsUrl = getSMSURL(targetPhone, message);
+  const smsUrl = getSMSURL(targetPhone, message, isIOS);
 
   const resetForm = () => {
     setName("");

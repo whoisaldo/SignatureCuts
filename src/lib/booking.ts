@@ -29,12 +29,10 @@ export function getWhatsAppURL(phone: string, message: string): string {
   return `https://wa.me/${phone.replace(/\D/g, "")}?text=${encodeURIComponent(message)}`;
 }
 
-export function getSMSURL(phone: string, message: string): string {
-  const body = message
-    .replace(/\r?\n/g, "%0D%0A")
-    .replace(/&/g, "%26")
-    .replace(/#/g, "%23");
-  return `sms:${phone}&body=${body}`;
+export function getSMSURL(phone: string, message: string, isIOS = false): string {
+  // iOS uses &body; Android needs ?body to separate text from the recipient.
+  const separator = isIOS ? "&" : "?";
+  return `sms:${phone}${separator}body=${encodeURIComponent(message)}`;
 }
 
 export function getDirectionsURL(lat: number, lng: number, address: string): string {
